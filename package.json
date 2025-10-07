@@ -1,0 +1,27 @@
+{
+  "name": "cypress-e2e-saucedemo-pom-bdd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adeliasb/cypress-e2e-saucedemo-pom-bdd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adeliasb/cypress-e2e-saucedemo-pom-bdd/issues"
+  },
+  "homepage": "https://github.com/adeliasb/cypress-e2e-saucedemo-pom-bdd#readme",
+  "devDependencies": {
+    "cypress": "^15.3.0",
+    "cypress-cucumber-preprocessor": "^4.3.1"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/e2e/step_definitions/"
+  }
+}
