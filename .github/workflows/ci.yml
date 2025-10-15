@@ -1,4 +1,4 @@
-name: Cypress CI
+name: Cypress CI with Evidence
 
 on:
   push:
@@ -29,8 +29,8 @@ jobs:
         with:
           browser: chrome
           record: false
-          command: run # roda os testes
-          headed: false # modo headless
+          headed: false
+          command: run
           group: "CI Tests"
           config: |
             video=true
@@ -39,10 +39,27 @@ jobs:
             screenshotsFolder=cypress/screenshots
             videoUploadOnPasses=true
 
+      - name: Rename Cypress artifacts with job/test name
+        run: |
+          # Criar pastas separadas
+          mkdir -p cypress/evidence/videos cypress/evidence/screenshots
+          # Renomear vídeos
+          for f in cypress/videos/**/*.mp4; do
+            if [ -f "$f" ]; then
+              mv "$f" "cypress/evidence/videos/$(basename "$f" | tr ' ' '_')"
+            fi
+          done
+          # Renomear screenshots
+          for f in cypress/screenshots/**/*.{png,jpg}; do
+            if [ -f "$f" ]; then
+              mv "$f" "cypress/evidence/screenshots/$(basename "$f" | tr ' ' '_')"
+            fi
+          done
+
       - name: Upload Cypress artifacts
-        uses: actions/upload-artifact@v4 # atualizar para v4
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-evidence
           path: |
-            cypress/videos/**
-            cypress/screenshots/**
+            cypress/evidence/videos/**
+            cypress/evidence/screenshots/**
