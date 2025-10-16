@@ -1,57 +1,40 @@
-name: Cypress CI
+name: Cypress E2E
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install dependencies
+      - name: Instalar dependências
         run: npm ci
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
-        with:
-          browser: chrome
-          headed: false
-          record: false
-          group: "CI Tests"
-          config: |
-            video=true
-            screenshotOnRunFailure=true
-            videosFolder=cypress/videos
-            screenshotsFolder=cypress/screenshots
-            videoUploadOnPasses=true
+      - name: Executar Cypress (headless)
+        run: npx cypress run --browser chrome
 
-      - name: Upload Cypress artifacts
+      #  Artefatos
+      - name: 📎 Fazer upload de screenshots
+        uses: actions/upload-artifact@v4
+        if: failure() # só se falhar
+        with:
+          name: cypress-screenshots
+          path: cypress/artifacts/screenshots
+
+      - name: 📎 Fazer upload de vídeos
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-evidence
-          path: |
-            cypress/videos/**
-            cypress/screenshots/**
+          name: cypress-videos
+          path: cypress/artifacts/videos
